@@ -39,4 +39,16 @@ describe('Band and Musician Models', () => {
         const testMusician = await Musician.create({name: "Johnny", instrument: "flute"})
         expect(testMusician.name).toBe("Johnny");
     })
+
+    test('can update', async () => {
+        const testBand = await Band.create({name: "WHO", genre: "Pop", showCount: 1})
+        const testMusician = await Musician.create({name: "Johnny", instrument: "flute"})
+        expect(testBand.name).toBe("WHO");
+        expect(testMusician.name).toBe("Johnny");
+
+        const updatedBand = await testBand.update({name: "NOW"})
+        const updatedMusician = await testMusician.update({name: "John"})
+        expect(testBand.name).toBe("NOW");
+        expect(testMusician.name).toBe("John");
+    })
 })
