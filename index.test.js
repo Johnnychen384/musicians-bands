@@ -51,4 +51,19 @@ describe('Band and Musician Models', () => {
         expect(testBand.name).toBe("NOW");
         expect(testMusician.name).toBe("John");
     })
+
+
+    test('can create a Band and Add association', async () => {
+        // TODO - test creating a band
+        const testBand = await Band.create({name: "WHO", genre: "Pop", showCount: 1})
+        const testMusician1 = await Musician.create({name: "Johnny1", instrument: "flute"})
+        const testMusician2 = await Musician.create({name: "Johnny2", instrument: "flute"})
+
+        const band = await Band.findByPk(1)
+        await band.addMusician(testMusician1)
+        await band.addMusician(testMusician2)
+
+        const bandMusicians = await band.getMusicians()
+        expect(bandMusicians.length).toBe(2)
+    })
 })
