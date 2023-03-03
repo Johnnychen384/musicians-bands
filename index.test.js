@@ -78,6 +78,8 @@ describe('Band and Musician Models', () => {
         expect(testSong1.title).toBe("ABC")
         expect(testSong2.title).toBe("DEF")
 
+        // Tests to see if bands and songs are associated
+
         await testBand1.addSongs(testSong1)
         let bandSongsArr = await testBand1.getSongs()
         expect(bandSongsArr.length).toBe(1)
