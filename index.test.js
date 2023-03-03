@@ -99,4 +99,41 @@ describe('Band and Musician Models', () => {
 
 
     })
+
+
+    test("Create test data and associate the models and find all bands using eager loading", async () => {
+        // Bands
+        const testBand1 = await Band.create({name: "WHO1", genre: "Pop", showCount: 1})
+        const testBand2 = await Band.create({name: "WHO2", genre: "Pop", showCount: 1})
+
+        // Musicians
+        const testMusician1 = await Musician.create({name: "Johnny1", instrument: "flute"})
+        const testMusician2 = await Musician.create({name: "Johnny2", instrument: "flute"})
+
+        // Songs
+        const testSong1 = await Song.create({title: "ABC", year: 2000})
+        const testSong2 = await Song.create({title: "DEF", year: 3000})
+
+        await testBand1.addMusician(testMusician1)
+        await testBand1.addMusician(testMusician2)
+
+        const someBand = await Band.findAll({
+            include: [
+                {model: Musician}
+            ]
+        })
+
+        expect(someBand[0].Musicians.length).toBe(2)
+
+        await testBand1.addSongs(testSong1)
+        await testBand1.addSongs(testSong2)
+
+        const someSongs = await Band.findAll({
+            include: [
+                {model: Song}
+            ]
+        })
+
+        expect(someSongs[0].Songs.length).toBe(2)
+    })
 })
