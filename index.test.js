@@ -1,11 +1,11 @@
 const {sequelize} = require('./db');
-const {Band, Musician} = require('./index')
+const {Band, Musician, Song} = require('./index')
 
 describe('Band and Musician Models', () => {
     /**
      * Runs the code prior to all tests
      */
-    beforeAll(async () => {
+    beforeEach(async () => {
         // the 'sync' method will create tables based on the model class
         // by setting 'force:true' the tables are recreated each time the 
         // test suite is run
@@ -65,5 +65,36 @@ describe('Band and Musician Models', () => {
 
         const bandMusicians = await band.getMusicians()
         expect(bandMusicians.length).toBe(2)
+    })
+
+    test('can add multiple musicians to a band', async () => {
+        const testBand1 = await Band.create({name: "WHO1", genre: "Pop", showCount: 1})
+        const testBand2 = await Band.create({name: "WHO2", genre: "Pop", showCount: 1})
+
+        const testSong1 = await Song.create({title: "ABC", year: 2000})
+        const testSong2 = await Song.create({title: "DEF", year: 3000})
+
+        // Test to see if Song is actually creating instances.
+        expect(testSong1.title).toBe("ABC")
+        expect(testSong2.title).toBe("DEF")
+
+        await testBand1.addSongs(testSong1)
+        let bandSongsArr = await testBand1.getSongs()
+        expect(bandSongsArr.length).toBe(1)
+
+        
+        await testBand1.addSongs(testSong2)
+        bandSongsArr = await testBand1.getSongs()
+        expect(bandSongsArr.length).toBe(2)
+        
+
+        // ===============
+        
+        // test to see if band2 is associated with any of the songs. It shouldnt.
+        await testSong1.addBands(testBand1)
+        let songsBandArr = await testSong1.getBands()
+        expect(songsBandArr.some(band => band.name === "WHO2")).toBe(false)
+
+
     })
 })
